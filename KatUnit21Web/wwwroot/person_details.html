@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP Details</title>
+</head>
+<body>
+  
+    <form method="post" action="/Home/Donate">
+        <input type="submit" value="Donate with PayPal">
+    </form>
+
+    <h1>MP Details</h1>
+    <div id="mp-details">
+        
+    </div>
+
+    <script>
+        async function fetchPersonDetails() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const personId = urlParams.get('id');
+                //console.log('Person ID:', personId); 
+
+                const response = await fetch(`/home/person/${personId}`);
+                const data = await response.json();
+
+                console.log('API Response:', data); //log API response
+
+                if (data) {
+                    const mpDetails = document.getElementById('mp-details');
+                    mpDetails.innerHTML = `
+                        <p><strong>Name:</strong> ${data.fullName}</p>
+                        <p><strong>Party:</strong> ${data.party}</p>
+                        <p><strong>Constituency:</strong> ${data.constituency}</p>
+                       
+                    `;
+                } else {
+                    console.log('No data received from the API');
+                }
+            } catch (error) {
+                console.error('Error fetching MP details:', error);
+            }
+        }
+
+    </script>
+
+
+
+</body>
+</html>

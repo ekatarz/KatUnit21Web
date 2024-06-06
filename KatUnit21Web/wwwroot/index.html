@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of MPs</title>
+</head>
+<body>
+    <!-- PayPal donate button -->
+    <form method="post" action="/Home/Donate">
+        <input type="submit" value="Donate with PayPal">
+    </form>
+
+    <!-- Search box for person ID -->
+    <div>
+        <label for="personId">Search MP by Person ID:</label>
+        <input type="text" id="personId" name="personId">
+        <button id="searchButton">Search</button>
+    </div>
+
+    <h1>List of MPs and Lords</h1>
+
+    <button onclick="window.location.href = '/lords.html';">Get Lords</button>
+
+    <h1>List of MPs</h1>
+    <table id="mps-table">
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Person ID</th>
+                <th>Name</th>
+                <th>Party</th>
+                <th>Constituency</th>
+            </tr>
+        </thead>
+        <tbody>
+           
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchAndPopulateMps() {
+            try {
+                const date = '2023-05-01'; 
+                const response = await fetch(`/home/mps?date=${date}`);
+                const data = await response.json();
+
+                console.log('API Response:', data); //log API response
+
+                const tableBody = document.querySelector('#mps-table tbody');
+
+                if (data && data.length > 0) {
+                    data.forEach(mp => {
+                        const row = tableBody.insertRow();
+                        row.innerHTML = `
+                                                <td>${mp.member_id}</td>
+                                                <td>${mp.person_id}</td>
+                                                <td>${mp.name}</td>
+                                                <td>${mp.party}</td>
+                                                <td>${mp.constituency}</td>
+                                            `;
+                    });
+                    console.log('Data populated successfully');
+                } else {
+                    console.log('No data returned from API');
+                }
+            } catch (error) {
+                console.error('Error fetching MPs:', error);
+            }
+        }
+
+        async function searchPerson() {
+            try {
+                const personId = document.getElementById('personId').value;
+                const response = await fetch(`/home/person/${personId}`);
+                const data = await response.json();
+
+                console.log('API Response:', data); // Log API response
+
+               if (data) {
+                    
+                    window.location.href = `/person_details.html?id=${personId}`;
+                } else {
+                    alert('No data found for the provided Person ID.');
+                }
+            } catch (error) {
+                console.error('Error searching person:', error);
+            }
+        }
+
+        window.onload = function () {
+            fetchAndPopulateMps(); //fetch MPs data when the page loads
+            document.getElementById('searchButton').addEventListener('click', searchPerson); 
+        };
+
+    </script>
+</body>
+</html>

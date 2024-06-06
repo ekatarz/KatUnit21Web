@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Lords</title>
+</head>
+<body>
+    <h1>List of Lords</h1>
+    <table id="lords-table">
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Person ID</th>
+                <th>Name</th>
+                <th>Party</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table body will be populated dynamically -->
+        </tbody>
+    </table>
+
+    <!-- JavaScript to fetch and populate Lords data -->
+    <script>
+        async function fetchAndPopulateLords() {
+            try {
+                const response = await fetch(`/lords?party=Labour`);
+                const data = await response.json();
+
+                console.log('API Response:', data); // Log API response
+
+                const tableBody = document.querySelector('#lords-table tbody');
+
+                if (data && data.length > 0) {
+                    data.forEach(lord => {
+                        const row = tableBody.insertRow();
+                        row.innerHTML = `
+                                <td>${lord.member_id}</td>
+                                <td>${lord.person_id}</td>
+                                <td>${lord.name}</td>
+                                <td>${lord.party}</td>
+                            `;
+                    });
+                    console.log('Data populated successfully');
+                } else {
+                    console.log('No data returned from API');
+                }
+            } catch (error) {
+                console.error('Error fetching Lords:', error);
+            }
+        }
+
+        // Fetch and populate Lords data when the page loads
+        window.onload = function () {
+            fetchAndPopulateLords();
+        };
+    </script>
+</body>
+</html>
